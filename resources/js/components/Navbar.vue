@@ -10,11 +10,10 @@
       </button>
 
       <div id="navbarToggler" class="collapse navbar-collapse">
-        <ul class="navbar-nav">
-          <locale-dropdown />
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li> -->
+        <ul v-if="user" class="navbar-nav">
+          <router-link :to="{name:'file'}" class="navbar-brand">
+            Files
+          </router-link>
         </ul>
 
         <ul class="navbar-nav ml-auto">

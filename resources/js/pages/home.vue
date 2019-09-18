@@ -1,11 +1,15 @@
 <template>
-  <card :title="$t('home')">
-    {{ $t('you_are_logged_in') }}
+  <card :title="$t('Overview')">
+    <overview></overview>
+    <detail></detail>
   </card>
 </template>
 
 <script>
+import Overview from "../components/Overview";
+import Detail from "../components/Detail";
 export default {
+  components: {Detail, Overview},
   middleware: 'auth',
 
   metaInfo () {

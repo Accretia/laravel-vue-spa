@@ -22,6 +22,13 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::patch('settings/profile', 'Settings\ProfileController@update');
     Route::patch('settings/password', 'Settings\PasswordController@update');
+
+    Route::group(['prefix' => 'file'] , function() {
+        Route::post('upload', 'API\FileController@upload');
+        Route::get('list', 'API\FileController@fileList');
+        Route::get('overview', 'API\FileController@overview');
+        Route::get('detail', 'API\FileController@detail');
+    });
 });
 
 Route::group(['middleware' => 'guest:api'], function () {
