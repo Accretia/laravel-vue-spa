@@ -40,9 +40,13 @@
           @ok="handleHide"
         />
       </div>
-      <div v-for="i in Math.ceil(files.length / 3)" class="row">
-        <div v-for="item in files.slice((i - 1) * 3, i * 3)" class="col-md-4">
-          <img :src="item.url" class="img-responsive img-thumbnail" @click="showSingle(item.url)">
+      <div v-for="i in Math.ceil(files.length / 3)" :key="i" class="row">
+        <div v-for="item in files.slice((i - 1) * 3, i * 3)" :key="item" class="col-md-4">
+          <img :src="item.url" class="img-responsive img-thumbnail">
+          <div>
+            <button class="btn-view btn btn-primary" @click="showSingle(item.url)">View</button>
+            <button class="btn-delete btn btn-danger" @click="actionDelete(item.url)">Delete</button>
+          </div>
         </div>
       </div>
     </div>
@@ -102,6 +106,24 @@ export default {
       bvModalEvt.preventDefault()
       // Trigger submit handler
       // this.handleSubmit()
+    },
+    actionDelete (url) {
+      let fileArr = url.split('/')
+      let fileNameX = fileArr.slice(-1).pop()
+      let urlNew = 'api/file/delete/'+fileNameX
+      axios.delete(urlNew)
+        .then(response => {
+          if (response.status === 200) {
+            this.fetchData()
+          } else {
+            this.currentStatus = STATUS_FAILED
+          }
+        })
+        .catch(function (error) {
+          // console.log(error);
+          this.uploadError = error.response
+          this.currentStatus = STATUS_FAILED
+        })
     },
     resetModal () {
       this.filename = ''
@@ -205,5 +227,21 @@ export default {
     font-size: 1.2em;
     text-align: center;
     padding: 50px 0;
+  }
+  .btn-delete{
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    opacity: 0.7;
+  }
+  .btn-view{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    opacity: 0.7;
   }
 </style>

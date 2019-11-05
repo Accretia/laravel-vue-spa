@@ -17,12 +17,12 @@ RUN \
     LC_ALL=C.UTF-8 add-apt-repository -y -u ppa:ondrej/php && \
     apt-get update && \
     apt-get install -y imagemagick graphicsmagick && \
-    apt-get install -y php7.2-bcmath php7.2-bz2 php7.2-cli php7.2-common php7.2-curl php7.2-dba php7.2-fpm php7.2-gd php7.2-gmp php7.2-imap php7.2-intl php7.2-ldap php7.2-mbstring php7.2-mysql php7.2-odbc php7.2-pgsql php7.2-recode php7.2-snmp php7.2-soap php7.2-sqlite php7.2-tidy php7.2-xml php7.2-xmlrpc php7.2-xsl php7.2-zip && \
+    apt-get install -y php7.3-bcmath php7.3-bz2 php7.3-cli php7.3-common php7.3-curl php7.3-dba php7.3-fpm php7.3-gd php7.3-gmp php7.3-imap php7.3-intl php7.3-ldap php7.3-mbstring php7.3-mysql php7.3-odbc php7.3-pgsql php7.3-recode php7.3-snmp php7.3-soap php7.2-sqlite php7.2-tidy php7.2-xml php7.3-xmlrpc php7.3-xsl php7.3-zip && \
     apt-get install -y php-gnupg php-imagick php-mongodb php-streams php-fxsl && \
     mkdir /tmp/composer/ && \
     cd /tmp/composer && \
     apt-get update &&\
-    apt-get install curl &&\
+    apt-get install -y curl &&\
     curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
     chmod a+x /usr/local/bin/composer && \
@@ -33,7 +33,7 @@ RUN \
 RUN \
     apt-get update && \
     apt-get install -y nginx
-    
+
 
 
 COPY config/nginx.conf /etc/nginx/sites-enabled/default
@@ -47,24 +47,24 @@ RUN apt-get install -y locales && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && 
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/msprod.list
 RUN apt-get update
-RUN apt-get install -y mssql-tools
-RUN ACCEPT_EULA=Y apt-get install -y msodbcsql unixodbc-dev gcc g++ build-essential
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
+RUN ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
+RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
 
-RUN apt-get install -y php-pear
+
+RUN apt-get install -y php-pear  php7.3-dev
 RUN apt-get update
-RUN apt-get install -y php7.2-dev
-RUN apt-get update
 
-RUN pecl install sqlsrv-4.3.0
-RUN pecl install pdo_sqlsrv-4.3.0
+RUN pecl install sqlsrv-5.6.0
+RUN pecl install pdo_sqlsrv-5.6.0
 
-RUN echo "extension=/usr/lib/php/20170718/sqlsrv.so" >> /etc/php/7.2/cli/php.ini
-RUN echo "extension=/usr/lib/php/20170718/pdo_sqlsrv.so" >> /etc/php/7.2/cli/php.ini
-RUN echo "extension=/usr/lib/php/20170718/sqlsrv.so" >> /etc/php/7.2/fpm/php.ini
-RUN echo "extension=/usr/lib/php/20170718/pdo_sqlsrv.so" >> /etc/php/7.2/fpm/php.ini
+RUN printf "; priority=20\nextension=sqlsrv.so\n" > /etc/php/7.3/mods-available/sqlsrv.ini
+RUN printf "; priority=30\nextension=pdo_sqlsrv.so\n" > /etc/php/7.3/mods-available/pdo_sqlsrv.ini
+RUN phpenmod -v 7.3 sqlsrv pdo_sqlsrv
 
 RUN apt-get update
 RUN apt-get install -y composer
 
-EXPOSE 80 443
-CMD service php7.2-fpm start && nginx -g "daemon off;"
+EXPOSE 80 443 9515
+CMD service php7.3-fpm start && nginx -g "daemon off;"

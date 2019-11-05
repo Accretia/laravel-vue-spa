@@ -79,4 +79,15 @@ class FileController extends Controller
 
         return Response::json($data);
     }
+
+    public function delete($fileName){
+        $user_id = Auth::user()->id;
+        $result = array();
+        $fileExists = Storage::disk('public')->exists("/".$user_id."/".$fileName);
+
+        if($fileExists){
+            Storage::disk('public')->delete("/".$user_id."/".$fileName);
+        }
+
+    }
 }

@@ -28,6 +28,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('list', 'API\FileController@fileList');
         Route::get('overview', 'API\FileController@overview');
         Route::get('detail', 'API\FileController@detail');
+        Route::delete('delete/{fileName}', 'API\FileController@delete');
+
     });
 });
 
