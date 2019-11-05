@@ -23,7 +23,8 @@ class ExampleTest extends DuskTestCase
                 ->type('email', "kittinun@merchant.co.th")
                 ->type('password', '123123Abc')
                 ->press('Log In')
-                ->assertSee('Overview');
+                ->waitForLocation('/home')
+                ->assertPathIs('/home');
         });
 
 
