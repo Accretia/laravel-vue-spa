@@ -40,12 +40,16 @@
           @ok="handleHide"
         />
       </div>
-      <div v-for="i in Math.ceil(files.length / 3)" :key="i" class="row">
-        <div v-for="item in files.slice((i - 1) * 3, i * 3)" :key="item" class="col-md-4">
+      <div v-for="i in Math.ceil(files.length / 3)" class="row">
+        <div v-for="item in files.slice((i - 1) * 3, i * 3)" class="col-md-4">
           <img :src="item.url" class="img-responsive img-thumbnail">
           <div>
-            <button class="btn-view btn btn-primary" @click="showSingle(item.url)">View</button>
-            <button class="btn-delete btn btn-danger" @click="actionDelete(item.url)">Delete</button>
+            <button class="btn-view btn btn-primary" @click="showSingle(item.url)">
+              View
+            </button>
+            <button class="btn-delete btn btn-danger" @click="actionDelete(item.url)">
+              Delete
+            </button>
           </div>
         </div>
       </div>
@@ -69,7 +73,7 @@ export default {
       uploadedFiles: [],
       uploadError: null,
       currentStatus: null,
-      uploadFieldName: 'photos',
+      uploadFieldName: 'photos[]',
       files: [],
       filename: '',
       imgs: '', // Img Url , string or Array
@@ -110,7 +114,7 @@ export default {
     actionDelete (url) {
       let fileArr = url.split('/')
       let fileNameX = fileArr.slice(-1).pop()
-      let urlNew = 'api/file/delete/'+fileNameX
+      let urlNew = 'api/file/delete/' + fileNameX
       axios.delete(urlNew)
         .then(response => {
           if (response.status === 200) {
@@ -141,7 +145,7 @@ export default {
         .then(response => {
           if (response.status === 200) {
             this.currentStatus = STATUS_SUCCESS
-            this.files.push(response.data)
+            this.fetchData()
           } else {
             this.currentStatus = STATUS_FAILED
           }
@@ -167,6 +171,7 @@ export default {
         })
 
       // save it
+      //console.log(formData)
       this.save(formData)
     },
     fetchData () {

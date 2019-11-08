@@ -16,13 +16,15 @@ class FileController extends Controller
 
     public function upload(Request $request){
         $result = array();
-        if ($request->hasFile('photos')){
-
-            $filename = $request->file('photos')->getClientOriginalName();
+        //print_r($request->file('photos'));
+        foreach($request->file('photos') as $index => $file){
+            $filename = $file->getClientOriginalName();
             $user_id = Auth::user()->id;
-            $path = Storage::disk('public')->put($user_id , $request->file('photos'));
-            $result["url"] = "/uploads/".$path;
+            $path = Storage::disk('public')->put($user_id , $file);
+            $result[$index]["url"] = "/uploads/".$path;
         }
+
+
         return Response::json($result);
     }
 
